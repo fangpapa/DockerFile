@@ -14,3 +14,28 @@ docker-compose --version
 3. Docker Compose v2 with WordPress (docker-compose.yml)
 docker-compose up -d 建立、佈署、運作容器 
 docker-compose down --volume 毀掉環境 
+
+4. Verify
+docker-compose ps
+
+了解 Container, vNetwork, Volume 名稱規則
+
+
+5. Scale-Out Container
+docker-compose scale wordpress=3
+
+
+6. Container use Static IP Address
+
+     networks: 
+       vnet: 
+        ipv4_address: 10.10.10.57 
+
+networks: 
+    vnet: 
+      driver: bridge 
+      ipam: 
+        driver: default 
+        config: 
+          - subnet: 10.10.10.0/24 
+
