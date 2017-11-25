@@ -1,0 +1,8 @@
+# Cowsay Container - v0.1
+FROM centos:latest
+MAINTAINER 
+RUN yum -y update
+RUN yum install -y epel-release
+RUN yum install -y cowsay
+ENTRYPOINT ["/usr/bin/cowsay"]
+CMD ["Docker is very good !"]
