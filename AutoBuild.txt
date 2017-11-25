@@ -1,0 +1,18 @@
+1. Create Github Project
+
+2. Install Git and clone Github project
+yum -y install git 
+git clone https://github.com/fangpapa/cowsay 
+cd cowsay 
+
+3. Copy Dockerfile, cowsay, default.cow to Github project folder
+
+4.
+git status
+git add *
+git config --global user.name "XXX" 
+git config --global user.email "XXX" 
+git commit -m "Cowsay v0.5 with Alpine 3.5" 
+git push
+
+5. Docker Hub > Create > Create Automated Build > Github project
