@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+   db:
+     image: mysql:5.7
+     volumes:
+       - db_data:/var/lib/mysql
+     restart: always
+     networks:
+       vnet:
+        ipv4_address: 10.10.10.57
+     environment:
+       MYSQL_ROOT_PASSWORD: somewordpress
+       MYSQL_DATABASE: wordpress
+       MYSQL_USER: wordpress
+       MYSQL_PASSWORD: wordpress
+
+   wordpress:
+     depends_on:
+       - db
+     image: wordpress:latest
+     ports:
+       - "80"
+     restart: always
+     networks:
+       vnet:
+        ipv4_address: 10.10.10.80
+     environment:
+       WORDPRESS_DB_HOST: db:3306
+       WORDPRESS_DB_USER: wordpress
+       WORDPRESS_DB_PASSWORD: wordpress
+volumes:
+    db_data:
+
+networks:
+    vnet:
+      driver: bridge
+      ipam:
+        driver: default
+        config:
+          - subnet: 10.10.10.0/24
+
