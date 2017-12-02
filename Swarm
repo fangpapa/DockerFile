@@ -233,3 +233,15 @@ https://docs.docker.com/get-started/part5/#add-a-new-service-and-redeploy
 # docker stack ps webredis 
 
 
+
+
+19. Deploy Voting App on Docker Swarm 
+https://github.com/dockersamples/example-voting-app
+
+# curl -O https://raw.githubusercontent.com/docker/example-voting-app/master/docker-stack.yml 
+
+# docker stack deploy -c docker-stack.yml vote 
+
+
+
+
