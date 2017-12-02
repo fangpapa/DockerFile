@@ -1,0 +1,208 @@
+1. Check Firewall open Swarm protocol port
+https://docs.docker.com/engine/swarm/swarm-tutorial/#the-ip-address-of-the-manager-machine
+
+
+
+2. Docker Swarm Overview
+https://docs.docker.com/engine/swarm/
+https://docs.docker.com/engine/swarm/admin_guide/#add-manager-nodes-for-fault-tolerance
+https://docs.docker.com/engine/swarm/how-swarm-mode-works/nodes/
+
+
+
+3. Create Docker Swarm
+https://docs.docker.com/engine/swarm/swarm-mode/#create-a-swarm
+# docker swarm init --advertise-addr=10.10.75.71
+
+# docker node ls
+
+# docker info
+
+# netstat -tunpl
+
+# docker network ls
+
+
+
+4. Join Node
+https://docs.docker.com/engine/swarm/join-nodes/
+https://docs.docker.com/engine/reference/commandline/node_promote/
+https://docs.docker.com/engine/reference/commandline/node_demote/
+
+# docker swarm join-token worker
+
+# docker swarm join-token manager
+//如果，只是想要查詢 Token 的話，使用 --quiet 參數即可
+
+# docker node promote swarm02.weithenn.org
+
+# docker node demote swarm02.weithenn.org
+
+# docker node ls
+
+
+
+
+5. Deploy Service
+https://docs.docker.com/engine/swarm/swarm-tutorial/deploy-service/
+https://docs.docker.com/engine/swarm/how-swarm-mode-works/services/#services-tasks-and-containers
+
+# docker service create --name swarm-nginx -p 80:80/tcp -d nginx
+
+# docker service ls
+
+# docker service ps swarm-nginx
+
+
+
+
+6. Routing Mesh
+https://docs.docker.com/engine/swarm/ingress/
+https://success.docker.com/article/Docker_Reference_Architecture-_Designing_Scalable,_Portable_Docker_Container_Networks
+
+
+
+7. Update Publish Port
+https://docs.docker.com/engine/reference/commandline/service_update/#options
+
+# docker service rm swarm-nginx
+
+# docker service create --name swarm-nginx -d nginx
+
+# docker service update --publish-add 80:80 swarm-nginx
+
+
+
+8. use TCP/UDP Publish Port
+# docker service rm swarm-nginx
+
+# docker service create --name tcp-nginx -p 80:80/tcp -d nginx
+
+# docker service create --name udp-nginx -p 8080:80/udp -d nginx
+
+# docker service create --name tcp-udp-nginx -p 8888:80/tcp -p 8888:80/udp -d nginx
+
+
+
+9. Inspect Service
+https://docs.docker.com/engine/swarm/swarm-tutorial/inspect-service/
+
+# docker service create --name nginx -p 80:80/tcp -d nginx
+
+# docker service ls
+
+# docker service inspect --pretty nginx
+
+
+
+10. Scale Service
+# docker service scale nginx=3
+
+# docker service rm nginx
+
+# docker service create --name nginx --replicas 3 -p 80:80/tcp -d nginx
+
+
+
+11. Load Balance
+# docker ps
+
+# docker exec -it <Container ID> bash
+
+echo "<h1>Nginx service on Swarm01 Host</h1>" >> /usr/share/nginx/html/index.html
+
+
+
+12. High Availability
+https://www.coretechnologies.com/products/http-ping/
+http://download.ithome.com.tw/article/index/id/1867
+
+http-ping.exe -t -d http://10.10.75.71
+
+# docker ps
+
+# docker stop <Container ID>
+
+# docker service ls
+
+# docker service ps nginx
+
+
+
+
+13. Rolling Update (Nginx 1.12.2 -> 1.13.7)
+https://docs.docker.com/engine/swarm/swarm-tutorial/rolling-update/
+
+# docker service rm nginx
+
+# docker service create --replicas 3 --name nginx --update-delay 10s -p 80:80 -d nginx:1.12.2 
+
+# docker service inspect --pretty nginx
+
+# watch docker service ps nginx
+ 
+# watch docker service inspect --pretty nginx 
+
+# docker service update --image nginx:1.13.7 nginx
+
+# docker service ls
+
+# docker service ps nginx
+
+
+
+14. Drain Node
+https://docs.docker.com/engine/swarm/swarm-tutorial/drain-node/
+
+# docker node update --availability drain swarm02.weithenn.org
+
+# docker node ls
+
+# docker node inspect --pretty swarm02.weithenn.org
+
+# docker service ps nginx
+
+# docker node update --availability active swarm02.weithenn.org
+
+# docker service scale nginx=6
+
+
+
+
+15. Docker Swarm Visualizer
+https://github.com/dockersamples/docker-swarm-visualizer 
+
+docker service create \
+  --name=viz \
+  --publish=8080:8080/tcp \
+  --constraint=node.role==manager \
+  --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+  dockersamples/visualizer
+
+
+
+
+16. Portainer
+https://portainer.io/
+https://portainer.readthedocs.io/en/stable/deployment.html
+
+
+docker service create \
+    --name=portainer \
+    --publish=9000:9000 \
+    --constraint 'node.role == manager' \
+    --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+    portainer/portainer \
+    -H unix:///var/run/docker.sock
+
+
+
+
+17、Leave the Swarm
+https://docs.docker.com/engine/swarm/manage-nodes/#install-plugins-on-swarm-nodes 
+
+# docker swarm leave
+        
+# docker swarm leave  --force 
+
+# docker node rm swarm03.weithenn.org
