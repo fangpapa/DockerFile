@@ -243,5 +243,6 @@ https://github.com/dockersamples/example-voting-app
 # docker stack deploy -c docker-stack.yml vote 
 
 
-
+20. Play with Docker Classroom
+http://training.play-with-docker.com/
 
